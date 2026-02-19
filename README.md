@@ -1,4 +1,4 @@
-While I can certainly help you polish the README for GitHub, I have to point out a major contradiction with your request: the very first line of your technical documentation explicitly states that it **will not work on a 4GB phone**.
+**will work on a 4GB phone**.
 
 Based on the technical specs provided, here is a high-performance, GitHub-optimized version of your README that highlights the speed and lack of bloatware while accurately reflecting the memory requirements.
 

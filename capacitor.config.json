@@ -1,5 +1,13 @@
 {
-  "appId": "com.aaronl.kjvbible",
-  "appName": "king-james-bible",
-  "webDir": "dist"
+  "appId": "com.holybible.kjv",
+  "appName": "Holy Bible",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https"
+  },
+  "android": {
+    "allowMixedContent": true,
+    "captureInput": true,
+    "webContentsDebuggingEnabled": false
+  }
 }

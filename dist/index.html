@@ -1,6 +1,33 @@
-<script type="module" crossorigin src="/assets/index-DE2JCZ1M.js"></script>
-<link rel="stylesheet" crossorigin href="/assets/index-C8OqZlnX.css">
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
+  <title>Holy Bible KJV</title>
+  <style>
+    /* CSS logic to handle Samsung status bars and navigation notches */
+    :root {
+      --safe-area-inset-top: env(safe-area-inset-top, 0px);
+      --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      /* Stops the 'bounce' effect that causes lag on Android */
+      overscroll-behavior-y: none; 
+      background-color: #000; /* Match splash screen to reduce flicker */
+    }
+    #root {
+      height: 100vh;
+      width: 100vw;
+    }
+  </style>
+  <script type="module" crossorigin src="/assets/index-CKRPhT8C.js"></script>
+  <link rel="modulepreload" crossorigin href="/assets/vendor-CIe0WEjT.js">
+  <link rel="stylesheet" crossorigin href="/assets/index-aDeMUi5f.css">
+</head>
 <body>
   <div id="root"></div>
 </body>
+</html>

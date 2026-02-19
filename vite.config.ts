@@ -5,28 +5,40 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [
-    // The React and Tailwind plugins are both required for Make, even if
-    // Tailwind is not being actively used – do not remove them
     react(),
     tailwindcss(),
   ],
   resolve: {
     alias: {
-      // Alias @ to the src directory
       '@': path.resolve(__dirname, './src'),
     },
   },
-  // ADD THIS SECTION:
+  build: {
+    // Increased to handle the 12MB Bible text without constant warnings
+    chunkSizeWarningLimit: 20000, 
+    rollupOptions: {
+      output: {
+        // FUNCTIONAL APPROACH: Most reliable for resolving internal data folders
+        manualChunks(id) {
+          if (id.includes('src/data/')) {
+            return 'bible-data';
+          }
+          // Optional: Separate node_modules to keep your app logic even smaller
+          if (id.includes('node_modules')) {
+            return 'vendor';
+          }
+        }
+      }
+    }
+  },
   server: {
-    host: '0.0.0.0', // Listen on all network interfaces
+    host: '0.0.0.0',
     port: 5173,
     strictPort: true,
-    allowedHosts: true, // Allows ChromeOS hostnames like penguin.linux.test
+    allowedHosts: true,
     watch: {
-      usePolling: true, // Essential for file changes to register on ChromeOS
+      usePolling: true,
     },
   },
-
-  // File types to support raw imports. Never add .css, .tsx, or .ts files to this.
   assetsInclude: ['**/*.svg', '**/*.csv'],
 })

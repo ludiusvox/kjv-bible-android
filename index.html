@@ -1,4 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
+  <title>Holy Bible KJV</title>
+  <style>
+    /* CSS logic to handle Samsung status bars and navigation notches */
+    :root {
+      --safe-area-inset-top: env(safe-area-inset-top, 0px);
+      --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      /* Stops the 'bounce' effect that causes lag on Android */
+      overscroll-behavior-y: none; 
+      background-color: #000; /* Match splash screen to reduce flicker */
+    }
+    #root {
+      height: 100vh;
+      width: 100vw;
+    }
+  </style>
+</head>
 <body>
   <div id="root"></div>
   <script type="module" src="/src/main.tsx"></script>
 </body>
+</html>

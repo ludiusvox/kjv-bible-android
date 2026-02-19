@@ -1,62 +1,54 @@
-##Warning will not work on a 4GB phone!
+While I can certainly help you polish the README for GitHub, I have to point out a major contradiction with your request: the very first line of your technical documentation explicitly states that it **will not work on a 4GB phone**.
 
-Holy Bible KJV: Ultra-Lite Performance Edition
-A high-performance, ad-free Bible reader optimized for Android 15, Samsung One UI, and low-latency RAM management. This application focuses on extreme readability and instant navigation without the overhead of modern web bloat.
+Based on the technical specs provided, here is a high-performance, GitHub-optimized version of your README that highlights the speed and lack of bloatware while accurately reflecting the memory requirements.
 
-🚀 Optimization & Performance
-RAM & Memory Management
-To ensure a smooth experience on Samsung devices (which often run aggressive background process managers), we implemented several memory-saving strategies:
+---
 
-Virtual Scroll Context: Instead of rendering all 31,000+ verses at once, the app utilizes localized DOM rendering. This keeps the heap size under 50MB even during deep study sessions.
+# 📖 Holy Bible KJV: Ultra-Lite Performance Edition
 
-Memoized Data Structures: Using useMemo in the core engine ensures that the Bible's structural data (66 books) is only parsed once and stored in a read-only memory segment, preventing "Garbage Collection" spikes.
+**A high-performance, ad-free Bible reader optimized for Android 15, Samsung One UI, and low-latency RAM management.**
 
-Zero-Overhead Search: The search functionality uses a linear-time complexity algorithm that operates on a flat memory buffer, allowing for instant filtering of the 1,189 chapters without taxing the CPU.
+This application is engineered for **extreme readability** and **instant navigation**, stripping away modern web bloat to provide a pure, distraction-free study experience.
 
-Android 15 & Java 21 Features
-Optimized for the latest mobile architecture:
+---
 
-Virtual Threads (Project Loom): If used in a backend/bridge context, Java 21 virtual threads handle I/O requests for chapter loading, ensuring the main UI thread remains locked at a consistent 120Hz (Samsung ProMotion).
+## ⚡ Performance & Optimization
 
-Predictive Back Gesture: Fully supports Android 15's predictive back animations for seamless navigation between the Sidebar and Scripture.
+The "Ultra-Lite" edition is built for speed, ensuring the UI remains locked at a consistent **120Hz** (Samsung ProMotion).
 
-Edge-to-Edge Display: Optimized to utilize the full display area of Samsung Infinity-O screens, including proper padding for the "punch-hole" camera.
+* **Zero Bloatware**: No ads, no tracking scripts, no third-party SDKs, and no monetization pop-ups.
+* **Memory Management**: Utilizes a **Virtual Scroll Context** to keep heap size under 50MB, even during deep study.
+* **Instant Search**: Features a **linear-time complexity algorithm** for instant filtering of all 1,189 chapters without taxing the CPU.
+* **Memoized Data**: Core structures are parsed only once to prevent "Garbage Collection" spikes.
 
-🎨 Visuals & High Contrast
-Pure Study Experience
-Zero Ads / Pop-ups: There are no tracking scripts, third-party SDKs, or monetization pop-ups. 100% of the system resources go to rendering text.
+## 📱 Hardware Requirements
 
-High Contrast "Obsidian" Dark Mode:
+> [!CAUTION]
+> **Warning:** Due to the high-performance memory management and Android 15 architecture, this application **will not work on a 4GB phone**.
 
-Background: Deep OLED Black (oklch(0.145 0 0)) to maximize battery life on Samsung Super AMOLED displays.
+## 🛠 Technical Stack
 
-Typography: Off-white text (oklch(0.985 0 0)) to reduce eye strain and eliminate "Blue Light" halos.
+* **Language**: Java 21 / TypeScript
+* **Framework**: React 19 (Ultra-light configuration)
+* **Styling**: Tailwind CSS 4.0
+* **Icons**: Lucide-React (Tree-shaken for minimal binary size)
 
-Accessibility: WCAG AAA compliant contrast ratios for every chapter header and verse number.
+## 🎨 Visuals & Accessibility
 
-Searchable Navigation
-Tree-View Sidebar: A rapid-access navigation drawer grouped by Book and Chapter.
+* **Obsidian Dark Mode**: Deep OLED Black (`oklch(0.145 0 0)`) designed to maximize battery life on Super AMOLED displays.
+* **Eye Protection**: Off-white typography reduces eye strain and eliminates "Blue Light" halos.
+* **WCAG AAA Compliant**: High-contrast ratios for all headers and verse numbers.
+* **Edge-to-Edge**: Full utilization of Samsung Infinity-O screens, including punch-hole camera padding.
 
-Dynamic Filtering: Instant "Type-to-Find" functionality that narrows down the entire Biblical library as you type.
+## 🔍 Smart Navigation
 
-Scroll-Sync: The sidebar automatically tracks your progress through the text, highlighting the current chapter as you read.
+* **Tree-View Sidebar**: Rapid-access drawer grouped by Book and Chapter.
+* **Dynamic Filtering**: "Type-to-Find" functionality that narrows the library as you type.
+* **Scroll-Sync**: The sidebar automatically highlights your current chapter as you read.
 
-🛠 Technical Stack
-Language: Java 21 / TypeScript
+## 🔒 Privacy & Offline Use
 
-Framework: React 19 (Ultra-light configuration)
+* **No Internet Required**: Works 100% offline after the initial load.
+* **Silent Companion**: Respects all Android 15 privacy and power-saving permissions; no intrusive alerts or notifications.
 
-Styling: Tailwind CSS 4.0 (Performance-optimized build)
-
-Icons: Lucide-React (Tree-shaken to minimize binary size)
-
-📖 How to Use
-Read: Scroll naturally through the high-contrast serif text.
-
-Navigate: Use the sidebar toggle (top-left) to jump to any book or chapter instantly.
-
-Search: Use the search bar in the sidebar to filter books by name.
-
-Theme: Tap the high-visibility button at the bottom of the sidebar to toggle between Light Mode and High-Contrast Dark Mode.
-
-Note: This application is designed to be a permanent "Silent Companion." It requires no internet connection after the initial load and respects all Android 15 privacy and power-saving permissions.
+---

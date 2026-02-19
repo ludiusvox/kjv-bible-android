@@ -1,14 +1,17 @@
 import re
 import json
+import os
 
-def convert_bible_to_ts(input_file, output_file):
-    # Matches "1:1 " style verse markers
+def clean_text(text):
+    return re.sub(r'\s+', ' ', text).strip()
+
+def convert_bible_to_shards(input_file, output_base_dir):
     verse_pattern = re.compile(r'(\d+):(\d+)\s+')
     
     START_MARKER = "*** START OF THE PROJECT GUTENBERG EBOOK THE KING JAMES VERSION OF THE BIBLE ***"
     END_MARKER = "*** END OF THE PROJECT GUTENBERG EBOOK THE KING JAMES VERSION OF THE BIBLE ***"
 
-    # Robust Book info with flexible spacing and punctuation
+    # Updated with flexible ordering for "General" and "Epistle"
     kjv_books_info = [
         (r"The First Book of Moses[: ,]+Called Genesis", "Genesis"),
         (r"The Second Book of Moses[: ,]+Called Exodus", "Exodus"),
@@ -40,10 +43,10 @@ def convert_bible_to_ts(input_file, output_file):
         (r"Hosea", "Hosea"), (r"Joel", "Joel"), (r"Amos", "Amos"), (r"Obadiah", "Obadiah"),
         (r"Jonah", "Jonah"), (r"Micah", "Micah"), (r"Nahum", "Nahum"), (r"Habakkuk", "Habakkuk"),
         (r"Zephaniah", "Zephaniah"), (r"Haggai", "Haggai"), (r"Zechariah", "Zechariah"), (r"Malachi", "Malachi"),
-        (r"The Gospel According to (Saint )?Matthew", "Matthew"),
-        (r"The Gospel According to (Saint )?Mark", "Mark"),
-        (r"The Gospel According to (Saint )?Luke", "Luke"),
-        (r"The Gospel According to (Saint )?John", "John"),
+        (r"The Gospel According to (St\.|Saint )?Matthew", "Matthew"),
+        (r"The Gospel According to (St\.|Saint )?Mark", "Mark"),
+        (r"The Gospel According to (St\.|Saint )?Luke", "Luke"),
+        (r"The Gospel According to (St\.|Saint )?John", "John"),
         (r"The Acts of the Apostles", "Acts"),
         (r"The Epistle of Paul the Apostle to the Romans", "Romans"),
         (r"The First Epistle of Paul the Apostle to the Corinthians", "1 Corinthians"),
@@ -59,100 +62,85 @@ def convert_bible_to_ts(input_file, output_file):
         (r"The Epistle of Paul the Apostle to Titus", "Titus"),
         (r"The Epistle of Paul the Apostle to Philemon", "Philemon"),
         (r"The Epistle of Paul the Apostle to the Hebrews", "Hebrews"),
-        (r"The General Epistle of James", "James"),
-        (r"The First Epistle General of Peter", "1 Peter"),
-        (r"The Second General Epistle of Peter", "2 Peter"),
-        (r"The First Epistle General of John", "1 John"),
-        (r"The Second Epistle General of John", "2 John"),
-        (r"The Third Epistle General of John", "3 John"),
-        (r"The General Epistle of Jude", "Jude"),
-        (r"The Revelation of Saint John the Divine", "Revelation")
+        (r"The (General |Epistle )+of James", "James"),
+        (r"The First (General |Epistle )+of Peter", "1 Peter"),
+        (r"The Second (General |Epistle )+of Peter", "2 Peter"),
+        (r"The First (General |Epistle )+of John", "1 John"),
+        (r"The Second (General |Epistle )+of John", "2 John"),
+        (r"The Third (General |Epistle )+of John", "3 John"),
+        (r"The (General |Epistle )+of Jude", "Jude"),
+        (r"The Revelation of (St\.|Saint )?John the Divine", "Revelation")
     ]
 
     try:
         with open(input_file, 'r', encoding='utf-8', errors='ignore') as f:
             full_text = f.read()
 
-        # Locate Gutenberg markers (case-insensitive)
         upper_text = full_text.upper()
         start_idx = upper_text.find(START_MARKER.upper())
         end_idx = upper_text.find(END_MARKER.upper())
-
-        if start_idx != -1 and end_idx != -1:
-            content = full_text[start_idx + len(START_MARKER) : end_idx]
-        else:
-            print("Warning: Start/End markers not found. Processing whole file.")
-            content = full_text
+        content = full_text[start_idx + len(START_MARKER) : end_idx] if (start_idx != -1) else full_text
 
         book_positions = []
-        
         for pattern, display_name in kjv_books_info:
-            # Create regex to handle line breaks and spaces between words
-            regex_pattern = pattern.replace(r'\ ', r'\s+').replace(r'\:', r'[:,\s]+')
+            # Replaces spaces with whitespace matcher
+            regex_pattern = pattern.replace(' ', r'\s+')
             matches = list(re.finditer(regex_pattern, content, re.IGNORECASE))
             
             best_match = None
             min_dist = 999999
             
             for m in matches:
-                # Look for the verse "1:1" following the title
-                v_match = re.search(r"1:1\s+", content[m.end():m.end()+1500])
+                # Gutenberg headers are usually within 3000 chars of 1:1
+                v_match = re.search(r"1:1\s+", content[m.end():m.end()+3000])
                 if v_match:
-                    dist = v_match.start()
-                    # The "Header" will be much closer to 1:1 than a TOC entry
-                    if dist < min_dist:
-                        min_dist = dist
+                    if v_match.start() < min_dist:
+                        min_dist = v_match.start()
                         best_match = m
             
-            if not best_match:
-                # Fallback to display name check
-                short_m = re.search(r"^\s*" + re.escape(display_name) + r"\s*$", content, re.M | re.IGNORECASE)
-                if short_m and re.search(r"1:1\s+", content[short_m.end():short_m.end()+1500]):
-                    best_match = short_m
-
             if best_match:
                 book_positions.append((best_match.start(), display_name))
             else:
-                print(f"Warning: Could not find Header for {display_name}")
+                print(f"Warning: Missing {display_name}")
 
         book_positions.sort()
 
-        bible_data = []
+        book_index = []
         for i in range(len(book_positions)):
             start_p, b_name = book_positions[i]
             end_p = book_positions[i+1][0] if i+1 < len(book_positions) else len(content)
             
+            book_slug = b_name.lower().replace(" ", "-")
+            book_dir = os.path.join(output_base_dir, book_slug)
+            os.makedirs(book_dir, exist_ok=True)
+
             book_text = content[start_p:end_p]
-            current_book = {"book": b_name, "chapters": []}
-            
-            # Use regex split to get [junk, chapter, verse, text, chapter, verse, text...]
             parts = verse_pattern.split(book_text)
-            for j in range(1, len(parts), 3):
-                try:
-                    c_num, v_num = int(parts[j]), int(parts[j+1])
-                    v_text = re.sub(r'\s+', ' ', parts[j+2]).strip()
-                    
-                    if not current_book["chapters"] or current_book["chapters"][-1]["chapter"] != c_num:
-                        current_book["chapters"].append({"chapter": c_num, "verses": []})
-                    
-                    current_book["chapters"][-1]["verses"].append({"verse": v_num, "text": v_text})
-                except (ValueError, IndexError):
-                    continue
             
-            if current_book["chapters"]:
-                bible_data.append(current_book)
+            chapters = {}
+            for j in range(1, len(parts), 3):
+                c_num, v_num = str(int(parts[j])), str(int(parts[j+1]))
+                if c_num not in chapters: chapters[c_num] = {}
+                chapters[c_num][v_num] = f"<sup>{v_num}</sup> {clean_text(parts[j+2])}"
 
-        with open(output_file, 'w', encoding='utf-8') as out:
-            out.write("export interface BibleVerse { verse: number; text: string; }\n")
-            out.write("export interface BibleChapter { chapter: number; verses: BibleVerse[]; }\n")
-            out.write("export interface BibleBook { book: string; chapters: BibleChapter[]; }\n\n")
-            out.write(f"export const bibleBooks: BibleBook[] = {json.dumps(bible_data, indent=2)};\n\n")
-            out.write("export const getAllChapters = () => bibleBooks.flatMap(b => b.chapters.map(c => ({ ...c, id: `${b.book}-${c.chapter}`, bookName: b.book })));")
+            for ch, verses in chapters.items():
+                with open(os.path.join(book_dir, f"{ch}.json"), 'w') as out:
+                    json.dump(verses, out)
 
-        print(f"Done! Successfully processed {len(bible_data)} books.")
+            book_index.append({
+                "name": b_name,
+                "slug": book_slug,
+                "chapters": len(chapters)
+            })
+
+        # Save the index with chapter counts for the Sidebar
+        with open(os.path.join(output_base_dir, 'books.json'), 'w') as f:
+            json.dump(book_index, f, indent=2)
+
+        print(f"Successfully processed {len(book_positions)} books into {output_base_dir}")
 
     except Exception as e:
         print(f"Error: {e}")
 
 if __name__ == "__main__":
-    convert_bible_to_ts('bible.txt', 'bible-books.ts')
+    convert_bible_to_shards('bible.txt', 'public/data/bible')

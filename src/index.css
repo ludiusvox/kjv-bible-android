@@ -1,1 +1,25 @@
 @import "tailwindcss";
+@import "./styles/theme.css"; /* Ensure this path is correct relative to index.css */
+
+@layer base {
+  /* This ensures the superscript tags from the JSON are visible */
+  p sup {
+    @apply text-xs font-bold mr-2 select-none;
+    vertical-align: super;
+  }
+
+  /* Force colors for the mined HTML content */
+  p sup {
+    color: var(--primary);
+  }
+
+  .dark p sup {
+    color: #fbbf24; /* Amber-400 for better dark mode visibility */
+  }
+}
+
+/* Diagnostic: If your screen is black, this ensures text isn't also black */
+.dark body {
+  background-color: var(--background);
+  color: var(--foreground);
+}

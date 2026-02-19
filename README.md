@@ -1,3 +1,5 @@
+##Warning will not work on a 4GB phone!
+
 Holy Bible KJV: Ultra-Lite Performance Edition
 A high-performance, ad-free Bible reader optimized for Android 15, Samsung One UI, and low-latency RAM management. This application focuses on extreme readability and instant navigation without the overhead of modern web bloat.
 

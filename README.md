@@ -24,7 +24,7 @@ The "Ultra-Lite" edition is built for speed, ensuring the UI remains locked at a
 ## 📱 Hardware Requirements
 
 > [!CAUTION]
-> **Warning:** Due to the high-performance memory management and Android 15 architecture, this application **will not work on a 4GB phone**.
+> **Warning:** Due to the high-performance memory management and Android 15 architecture, this application **will work on a 4GB phone**.
 
 ## 🛠 Technical Stack
 

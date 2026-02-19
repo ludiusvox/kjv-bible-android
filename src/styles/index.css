@@ -1,0 +1,4 @@
+/* index.css */
+@import './fonts.css';
+@import 'tailwindcss'; /* Direct import of tailwind */
+@import './theme.css';  /* Your theme variables and @theme block */
